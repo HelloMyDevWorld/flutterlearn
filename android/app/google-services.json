@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "285147609335",
+    "firebase_url": "https://flutter-patryk.firebaseio.com",
+    "project_id": "flutter-patryk",
+    "storage_bucket": "flutter-patryk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285147609335:android:231ddb6c22ae8caedb7bf2",
+        "android_client_info": {
+          "package_name": "com.example.discover"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285147609335-472hp6sk16r1mtrj1u1bj9bt1slnojri.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtcMRfpl3MkFWcyobdjS5XWkkqF6itXD4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285147609335-472hp6sk16r1mtrj1u1bj9bt1slnojri.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

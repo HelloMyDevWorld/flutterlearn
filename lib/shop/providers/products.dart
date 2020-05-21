@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 import '../models/http_exception.dart';
 import './product.dart';
@@ -73,6 +77,10 @@ class Products with ChangeNotifier {
   // }
 
   Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    final user = await FirebaseAuth.instance.currentUser();
+    final authToken = (await user.getIdToken()).token;
+    final userId = user.uid;
+
     final filterString = filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     var url =
         'https://flutter-patryk.firebaseio.com/products.json?auth=$authToken&$filterString';
@@ -101,20 +109,38 @@ class Products with ChangeNotifier {
       _items = loadedProducts;
       notifyListeners();
     } catch (error) {
-      throw (error);
+      // throw (error);
     }
   }
 
+  Future<String> getImageUrl(File image) async{
+      var uuid = Uuid();
+      final ref = FirebaseStorage.instance
+            .ref()
+            .child('product_image')
+            .child(uuid.v1() + '.jpg');
+
+      await ref.putFile(image).onComplete;
+
+      return await ref.getDownloadURL();
+  }
+
   Future<void> addProduct(Product product) async {
+    final user = await FirebaseAuth.instance.currentUser();
+    final authToken = (await user.getIdToken()).token;
+    final userId = user.uid;
+    final image = await getImageUrl(product.image);
+
     final url =
         'https://flutter-patryk.firebaseio.com/products.json?auth=$authToken';
     try {
+    
       final response = await http.post(
         url,
         body: json.encode({
           'title': product.title,
           'description': product.description,
-          'imageUrl': product.imageUrl,
+          'imageUrl': image,
           'price': product.price,
           'creatorId': userId,
         }),
@@ -123,7 +149,7 @@ class Products with ChangeNotifier {
         title: product.title,
         description: product.description,
         price: product.price,
-        imageUrl: product.imageUrl,
+        imageUrl: image,
         id: json.decode(response.body)['name'],
       );
       _items.add(newProduct);
@@ -136,6 +162,10 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(String id, Product newProduct) async {
+    final user = await FirebaseAuth.instance.currentUser();
+    final authToken = (await user.getIdToken()).token;
+    final userId = user.uid;
+
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       final url =
@@ -155,6 +185,10 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
+    final user = await FirebaseAuth.instance.currentUser();
+    final authToken = (await user.getIdToken()).token;
+    final userId = user.uid;
+
     final url =
         'https://flutter-patryk.firebaseio.com/products/$id.json?auth=$authToken';
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);

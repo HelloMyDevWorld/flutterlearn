@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,6 +32,10 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fetchAndSetOrders() async {
+    final user = await FirebaseAuth.instance.currentUser();
+    final authToken = (await user.getIdToken()).token;
+    final userId = user.uid;
+
     final url = 'https://flutter-patryk.firebaseio.com/orders/$userId.json?auth=$authToken';
     final response = await http.get(url);
     final List<OrderItem> loadedOrders = [];
@@ -62,6 +67,10 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
+    final user = await FirebaseAuth.instance.currentUser();
+    final authToken = (await user.getIdToken()).token;
+    final userId = user.uid;
+
     final url = 'https://flutter-patryk.firebaseio.com/orders/$userId.json?auth=$authToken';
     final timestamp = DateTime.now();
     final response = await http.post(

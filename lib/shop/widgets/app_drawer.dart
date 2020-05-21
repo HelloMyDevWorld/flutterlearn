@@ -1,3 +1,6 @@
+import 'package:discover/chat/main_chat.dart';
+import 'package:discover/chat/screens/chat_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,15 +52,24 @@ class AppDrawer extends StatelessWidget {
           ),
           Divider(),
           ListTile(
+            leading: Icon(Icons.chat),
+            title: Text('Chat'),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacementNamed(ChatScreen.routeName);
+            },
+          ),
+          Divider(),
+          ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text('Logout'),
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/');
-
+              FirebaseAuth.instance.signOut();
               // Navigator.of(context)
               //     .pushReplacementNamed(UserProductsScreen.routeName);
-              Provider.of<Auth>(context, listen: false).logout();
+              // Provider.of<Auth>(context, listen: false).logout();
             },
           ),
         ],

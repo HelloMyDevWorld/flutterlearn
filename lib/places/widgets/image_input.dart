@@ -17,9 +17,9 @@ class ImageInput extends StatefulWidget {
 class _ImageInputState extends State<ImageInput> {
   File _storedImage;
 
-  Future<void> _takePicture() async {
+  Future<void> _takePicture(ImageSource source) async {
     final imageFile = await ImagePicker.pickImage(
-      source: ImageSource.camera,
+      source: source,
       maxWidth: 600,
     );
     if (imageFile == null) {
@@ -38,9 +38,13 @@ class _ImageInputState extends State<ImageInput> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Container(
+        Column(
+           
+          children: [
+
+        Container(    
           width: 150,
-          height: 100,
+          height: 110,
           decoration: BoxDecoration(
             border: Border.all(width: 1, color: Colors.grey),
           ),
@@ -55,18 +59,27 @@ class _ImageInputState extends State<ImageInput> {
                   textAlign: TextAlign.center,
                 ),
           alignment: Alignment.center,
+          
         ),
-        SizedBox(
-          width: 10,
-        ),
-        Expanded(
+
+   
+        Container(
           child: FlatButton.icon(
             icon: Icon(Icons.camera),
             label: Text('Take Picture'),
             textColor: Theme.of(context).primaryColor,
-            onPressed: _takePicture,
+            onPressed: () =>_takePicture(ImageSource.camera),
           ),
         ),
+                Container(
+          child: FlatButton.icon(
+            icon: Icon(Icons.folder),
+            label: Text('Take open folder'),
+            textColor: Theme.of(context).primaryColor,
+            onPressed: () =>_takePicture(ImageSource.gallery),
+          ),
+        ),
+        ],)
       ],
     );
   }
